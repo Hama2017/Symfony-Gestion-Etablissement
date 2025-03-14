@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\EtablissementRepository;
 use App\Enum\Secteur;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EtablissementRepository::class)]
@@ -85,6 +87,14 @@ class Etablissement
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     private ?string $typeContrat = null;
+    
+    #[ORM\OneToMany(mappedBy: 'etablissement', targetEntity: Commentaire::class, orphanRemoval: true)]
+    private Collection $commentaires;
+
+    public function __construct()
+    {
+        $this->commentaires = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -375,6 +385,35 @@ class Etablissement
     public function setTypeContrat(?string $typeContrat): self
     {
         $this->typeContrat = $typeContrat;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commentaire>
+     */
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    public function addCommentaire(Commentaire $commentaire): self
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires[] = $commentaire;
+            $commentaire->setEtablissement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): self
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            if ($commentaire->getEtablissement() === $this) {
+                $commentaire->setEtablissement(null);
+            }
+        }
 
         return $this;
     }
