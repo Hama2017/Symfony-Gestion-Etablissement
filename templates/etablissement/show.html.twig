@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ etablissement.appellationOfficielle }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <a href="{{ path('etablissements_index') }}" class="btn btn-light">
+                ← Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">
+                {{ etablissement.appellationOfficielle }}
+                <small class="float-right">{{ etablissement.numeroUai }}</small>
+            </h3>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <!-- Carte de localisation -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">📍 Localisation</h5>
+                            <p class="card-text">
+                                {{ etablissement.adresseUai }}<br>
+                                {{ etablissement.codePostalUai }} {{ etablissement.localiteAcheminementUai }}
+                            </p>
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item" 
+                                    src="https://www.openstreetmap.org/export/embed.html?bbox={{ etablissement.longitude-0.01 }}%2C{{ etablissement.latitude-0.01 }}%2C{{ etablissement.longitude+0.01 }}%2C{{ etablissement.latitude+0.01 }}&amp;layer=mapnik"
+                                    style="border: 1px solid silver">
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Détails administratifs -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">📋 Informations administratives</h5>
+                            <dl class="row">
+                                {% for section, champs in details %}
+                                    <dt class="col-sm-12 text-muted mt-2">{{ section }}</dt>
+                                    {% for champ in champs %}
+                                        <dt class="col-sm-5">{{ champ|replace({'_': ' '})|title }}</dt>
+                                        <dd class="col-sm-7">
+                                            {% if attribute(etablissement, champ) is null %}
+                                                <span class="text-muted">Non renseigné</span>
+                                            {% elseif champ ends with '_date' %}
+                                                {{ attribute(etablissement, champ)|date('d/m/Y') }}
+                                            {% else %}
+                                                {{ attribute(etablissement, champ) }}
+                                            {% endif %}
+                                        </dd>
+                                    {% endfor %}
+                                {% endfor %}
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer text-muted">
+            <small>
+                Dernière mise à jour : {{ etablissement.dateOuverture ? etablissement.dateOuverture|date('d/m/Y') : 'Inconnue' }}
+            </small>
+        </div>
+    </div>
+</div>
+{% endblock %}

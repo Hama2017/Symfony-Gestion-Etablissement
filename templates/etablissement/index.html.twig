@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des établissements{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">📚 Établissements scolaires ({{ total }})</h1>
+    
+    <div class="alert alert-info">
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Filtrer par :</h4>
+                <a href="{{ path('etablissements_departement', {'code': '75'}) }}" class="btn btn-outline-primary btn-sm">
+                    Exemple Département (75)
+                </a>
+                <a href="{{ path('etablissements_academie', {'code': '01'}) }}" class="btn btn-outline-primary btn-sm">
+                    Exemple Académie (01)
+                </a>
+            </div>
+            <div class="col-md-6 text-right">
+                <form class="form-inline">
+                    <input type="search" class="form-control mr-2" placeholder="Rechercher...">
+                    <button type="submit" class="btn btn-secondary">🔍</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>UAI</th>
+                            <th>Nom officiel</th>
+                            <th>Type</th>
+                            <th>Localisation</th>
+                            <th>Secteur</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for etablissement in etablissements %}
+                        <tr>
+                            <td>{{ etablissement.numeroUai }}</td>
+                            <td>{{ etablissement.appellationOfficielle }}</td>
+                            <td>{{ etablissement.denominationPrincipale }}</td>
+                            <td>
+                                {{ etablissement.codePostalUai }} {{ etablissement.localiteAcheminementUai }}
+                            </td>
+                            <td>
+                                <span class="badge badge-{{ etablissement.secteur == 'public' ? 'success' : 'warning' }}">
+                                    {{ etablissement.secteur.value|capitalize }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ path('etablissement_show', {'numeroUai': etablissement.numeroUai}) }}" 
+                                   class="btn btn-sm btn-info">
+                                    ➕ Détails
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
