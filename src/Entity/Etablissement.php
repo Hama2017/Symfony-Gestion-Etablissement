@@ -4,97 +4,92 @@ namespace App\Entity;
 
 use App\Repository\EtablissementRepository;
 use App\Enum\Secteur;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EtablissementRepository::class)]
 class Etablissement
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 10, unique: true)]
+    #[ORM\Column(length: 20, unique: true)]
+    #[Assert\NotBlank(message: "Le numéro UAI est obligatoire")]
     private ?string $numeroUai = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(length: 500, nullable: true)]
     private ?string $appellationOfficielle = null;
 
-    #[ORM\Column(type: 'string', length: 100)]
+    #[ORM\Column(length: 500, nullable: true)]
     private ?string $denominationPrincipale = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(length: 500, nullable: true)]
     private ?string $patronyme = null;
 
-    #[ORM\Column(type: 'string', enumType: Secteur::class)]
-    private ?Secteur $secteur = null;
+    #[ORM\Column(length: 20)]
+    #[Assert\NotBlank(message: "Le secteur est obligatoire")]
+    #[Assert\Choice(choices: ["Public", "Privé"], message: "Le secteur doit être 'Public' ou 'Privé'")]
+    private ?string $secteur = null;
 
-    #[ORM\Column(type: 'float')]
-    private ?float $longitude = null;
-
-    #[ORM\Column(type: 'float')]
-    private ?float $latitude = null;
-
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(length: 500, nullable: true)]
     private ?string $adresse = null;
 
-    #[ORM\Column(type: 'string', length: 10, nullable: true)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $codePostal = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $localiteAcheminement = null;
-
-    #[ORM\Column(type: 'string', length: 10, nullable: true)]
-    private ?string $codeDepartement = null;
-
-    #[ORM\Column(type: 'string', length: 100)]
-    private ?string $departement = null;
-
-    #[ORM\Column(type: 'string', length: 10, nullable: true)]
-    private ?string $codeCommune = null;
-
-    #[ORM\Column(type: 'string', length: 100)]
+    #[ORM\Column(length: 500, nullable: true)]
     private ?string $commune = null;
 
-    #[ORM\Column(type: 'string', length: 10, nullable: true)]
+    #[ORM\Column(nullable: true)]
+    private ?float $latitude = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $longitude = null;
+
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $natureUaiLibelle = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $natureUaiCode = null;
+
+    #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: "L'état de l'établissement est obligatoire")]
+    private ?string $etatEtablissement = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $codeDepartement = null;
+
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $departement = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $codeRegion = null;
 
-    #[ORM\Column(type: 'string', length: 100)]
+    #[ORM\Column(length: 500, nullable: true)]
     private ?string $region = null;
 
-    #[ORM\Column(type: 'string', length: 10, nullable: true)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $codeAcademie = null;
 
-    #[ORM\Column(type: 'string', length: 100)]
+    #[ORM\Column(length: 500, nullable: true)]
     private ?string $academie = null;
 
-    #[ORM\Column(type: 'string', length: 50, nullable: true)]
-    private ?string $nature = null;
-
-    #[ORM\Column(type: 'boolean')]
-    private bool $estOuvert = true;
-
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private ?string $ministere = null;
-
-    #[ORM\Column(type: 'string', length: 10, nullable: true)]
-    private ?string $sigle = null;
-
-    #[ORM\Column(type: 'date')]
+    #[ORM\Column(type: "date", nullable: true)]
     private ?\DateTimeInterface $dateOuverture = null;
 
-    #[ORM\Column(type: 'string', length: 50, nullable: true)]
-    private ?string $typeContrat = null;
-    
-    #[ORM\OneToMany(mappedBy: 'etablissement', targetEntity: Commentaire::class, orphanRemoval: true)]
-    private Collection $commentaires;
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $sigle = null;
 
-    public function __construct()
-    {
-        $this->commentaires = new ArrayCollection();
-    }
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $codeCommune = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $codeMinistere = null;
+
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $ministere = null;
 
     public function getId(): ?int
     {
@@ -106,7 +101,7 @@ class Etablissement
         return $this->numeroUai;
     }
 
-    public function setNumeroUai(string $numeroUai): self
+    public function setNumeroUai(string $numeroUai): static
     {
         $this->numeroUai = $numeroUai;
 
@@ -118,7 +113,7 @@ class Etablissement
         return $this->appellationOfficielle;
     }
 
-    public function setAppellationOfficielle(string $appellationOfficielle): self
+    public function setAppellationOfficielle(?string $appellationOfficielle): static
     {
         $this->appellationOfficielle = $appellationOfficielle;
 
@@ -130,7 +125,7 @@ class Etablissement
         return $this->denominationPrincipale;
     }
 
-    public function setDenominationPrincipale(string $denominationPrincipale): self
+    public function setDenominationPrincipale(?string $denominationPrincipale): static
     {
         $this->denominationPrincipale = $denominationPrincipale;
 
@@ -142,45 +137,21 @@ class Etablissement
         return $this->patronyme;
     }
 
-    public function setPatronyme(?string $patronyme): self
+    public function setPatronyme(?string $patronyme): static
     {
         $this->patronyme = $patronyme;
 
         return $this;
     }
 
-    public function getSecteur(): ?Secteur
+    public function getSecteur(): ?string
     {
         return $this->secteur;
     }
 
-    public function setSecteur(Secteur $secteur): self
+    public function setSecteur(string $secteur): static
     {
         $this->secteur = $secteur;
-
-        return $this;
-    }
-
-    public function getLongitude(): ?float
-    {
-        return $this->longitude;
-    }
-
-    public function setLongitude(float $longitude): self
-    {
-        $this->longitude = $longitude;
-
-        return $this;
-    }
-
-    public function getLatitude(): ?float
-    {
-        return $this->latitude;
-    }
-
-    public function setLatitude(float $latitude): self
-    {
-        $this->latitude = $latitude;
 
         return $this;
     }
@@ -190,33 +161,93 @@ class Etablissement
         return $this->adresse;
     }
 
-    public function setAdresse(string $adresse): self
+    public function setAdresse(?string $adresse): static
     {
         $this->adresse = $adresse;
 
         return $this;
     }
 
-    public function getCodePostal(): ?string
+public function getCodePostal(): ?string
+{
+    return $this->codePostal;
+}
+
+public function setCodePostal(?string $codePostal): static
+{
+    $this->codePostal = $codePostal;
+    
+    return $this;
+}
+
+    public function getCommune(): ?string
     {
-        return $this->codePostal;
+        return $this->commune;
     }
 
-    public function setCodePostal(?string $codePostal): self
+    public function setCommune(?string $commune): static
     {
-        $this->codePostal = $codePostal;
+        $this->commune = $commune;
 
         return $this;
     }
 
-    public function getLocaliteAcheminement(): ?string
+    public function getLatitude(): ?float
     {
-        return $this->localiteAcheminement;
+        return $this->latitude;
     }
 
-    public function setLocaliteAcheminement(?string $localiteAcheminement): self
+    public function setLatitude(?float $latitude): static
     {
-        $this->localiteAcheminement = $localiteAcheminement;
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): static
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    public function getNatureUaiLibelle(): ?string
+    {
+        return $this->natureUaiLibelle;
+    }
+
+    public function setNatureUaiLibelle(?string $natureUaiLibelle): static
+    {
+        $this->natureUaiLibelle = $natureUaiLibelle;
+
+        return $this;
+    }
+
+    public function getNatureUaiCode(): ?int
+    {
+        return $this->natureUaiCode;
+    }
+
+    public function setNatureUaiCode(?int $natureUaiCode): static
+    {
+        $this->natureUaiCode = $natureUaiCode;
+
+        return $this;
+    }
+
+    public function getEtatEtablissement(): ?string
+    {
+        return $this->etatEtablissement;
+    }
+
+    public function setEtatEtablissement(string $etatEtablissement): static
+    {
+        $this->etatEtablissement = $etatEtablissement;
 
         return $this;
     }
@@ -226,7 +257,7 @@ class Etablissement
         return $this->codeDepartement;
     }
 
-    public function setCodeDepartement(?string $codeDepartement): self
+    public function setCodeDepartement(?string $codeDepartement): static
     {
         $this->codeDepartement = $codeDepartement;
 
@@ -238,33 +269,9 @@ class Etablissement
         return $this->departement;
     }
 
-    public function setDepartement(string $departement): self
+    public function setDepartement(?string $departement): static
     {
         $this->departement = $departement;
-
-        return $this;
-    }
-
-    public function getCodeCommune(): ?string
-    {
-        return $this->codeCommune;
-    }
-
-    public function setCodeCommune(?string $codeCommune): self
-    {
-        $this->codeCommune = $codeCommune;
-
-        return $this;
-    }
-
-    public function getCommune(): ?string
-    {
-        return $this->commune;
-    }
-
-    public function setCommune(string $commune): self
-    {
-        $this->commune = $commune;
 
         return $this;
     }
@@ -274,7 +281,7 @@ class Etablissement
         return $this->codeRegion;
     }
 
-    public function setCodeRegion(?string $codeRegion): self
+    public function setCodeRegion(?string $codeRegion): static
     {
         $this->codeRegion = $codeRegion;
 
@@ -286,7 +293,7 @@ class Etablissement
         return $this->region;
     }
 
-    public function setRegion(string $region): self
+    public function setRegion(?string $region): static
     {
         $this->region = $region;
 
@@ -298,7 +305,7 @@ class Etablissement
         return $this->codeAcademie;
     }
 
-    public function setCodeAcademie(?string $codeAcademie): self
+    public function setCodeAcademie(?string $codeAcademie): static
     {
         $this->codeAcademie = $codeAcademie;
 
@@ -310,57 +317,9 @@ class Etablissement
         return $this->academie;
     }
 
-    public function setAcademie(string $academie): self
+    public function setAcademie(?string $academie): static
     {
         $this->academie = $academie;
-
-        return $this;
-    }
-
-    public function getNature(): ?string
-    {
-        return $this->nature;
-    }
-
-    public function setNature(?string $nature): self
-    {
-        $this->nature = $nature;
-
-        return $this;
-    }
-
-    public function isEstOuvert(): bool
-    {
-        return $this->estOuvert;
-    }
-
-    public function setEstOuvert(bool $estOuvert): self
-    {
-        $this->estOuvert = $estOuvert;
-
-        return $this;
-    }
-
-    public function getMinistere(): ?string
-    {
-        return $this->ministere;
-    }
-
-    public function setMinistere(?string $ministere): self
-    {
-        $this->ministere = $ministere;
-
-        return $this;
-    }
-
-    public function getSigle(): ?string
-    {
-        return $this->sigle;
-    }
-
-    public function setSigle(?string $sigle): self
-    {
-        $this->sigle = $sigle;
 
         return $this;
     }
@@ -370,50 +329,57 @@ class Etablissement
         return $this->dateOuverture;
     }
 
-    public function setDateOuverture(\DateTimeInterface $dateOuverture): self
+    public function setDateOuverture(?\DateTimeInterface $dateOuverture): static
     {
         $this->dateOuverture = $dateOuverture;
 
         return $this;
     }
 
-    public function getTypeContrat(): ?string
+    public function getSigle(): ?string
     {
-        return $this->typeContrat;
+        return $this->sigle;
     }
 
-    public function setTypeContrat(?string $typeContrat): self
+    public function setSigle(?string $sigle): static
     {
-        $this->typeContrat = $typeContrat;
+        $this->sigle = $sigle;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Commentaire>
-     */
-    public function getCommentaires(): Collection
+    public function getCodeCommune(): ?string
     {
-        return $this->commentaires;
+        return $this->codeCommune;
     }
 
-    public function addCommentaire(Commentaire $commentaire): self
+    public function setCodeCommune(?string $codeCommune): static
     {
-        if (!$this->commentaires->contains($commentaire)) {
-            $this->commentaires[] = $commentaire;
-            $commentaire->setEtablissement($this);
-        }
+        $this->codeCommune = $codeCommune;
 
         return $this;
     }
 
-    public function removeCommentaire(Commentaire $commentaire): self
+    public function getCodeMinistere(): ?string
     {
-        if ($this->commentaires->removeElement($commentaire)) {
-            if ($commentaire->getEtablissement() === $this) {
-                $commentaire->setEtablissement(null);
-            }
-        }
+        return $this->codeMinistere;
+    }
+
+    public function setCodeMinistere(?string $codeMinistere): static
+    {
+        $this->codeMinistere = $codeMinistere;
+
+        return $this;
+    }
+
+    public function getMinistere(): ?string
+    {
+        return $this->ministere;
+    }
+
+    public function setMinistere(?string $ministere): static
+    {
+        $this->ministere = $ministere;
 
         return $this;
     }
