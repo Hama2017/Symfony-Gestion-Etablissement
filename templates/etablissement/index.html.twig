@@ -1,71 +1,62 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des établissements{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <h1 class="mb-4">📚 Établissements scolaires ({{ total }})</h1>
-    
-    <div class="alert alert-info">
-        <div class="row">
-            <div class="col-md-6">
-                <h4>Filtrer par :</h4>
-                <a href="{{ path('etablissements_departement', {'code': '75'}) }}" class="btn btn-outline-primary btn-sm">
-                    Exemple Département (75)
-                </a>
-                <a href="{{ path('etablissements_academie', {'code': '01'}) }}" class="btn btn-outline-primary btn-sm">
-                    Exemple Académie (01)
-                </a>
-            </div>
-            <div class="col-md-6 text-right">
-                <form class="form-inline">
-                    <input type="search" class="form-control mr-2" placeholder="Rechercher...">
-                    <button type="submit" class="btn btn-secondary">🔍</button>
-                </form>
-            </div>
-        </div>
-    </div>
+    <div class="container mt-4">
+        <h1>{{ title }}</h1>
 
-    <div class="card shadow">
-        <div class="card-body">
+        {% if etablissements|length > 0 %}
+            <div class="row mb-3">
+                <div class="col">
+                    <p>{{ etablissements|length }} établissement(s) trouvé(s)</p>
+                </div>
+            </div>
+            
             <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="thead-light">
+                <table class="table table-striped">
+                    <thead>
                         <tr>
                             <th>UAI</th>
-                            <th>Nom officiel</th>
+                            <th>Nom</th>
                             <th>Type</th>
-                            <th>Localisation</th>
+                            <th>Commune</th>
+                            <th>Département</th>
                             <th>Secteur</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for etablissement in etablissements %}
+                    {% for etablissement in etablissements %}
                         <tr>
                             <td>{{ etablissement.numeroUai }}</td>
                             <td>{{ etablissement.appellationOfficielle }}</td>
                             <td>{{ etablissement.denominationPrincipale }}</td>
                             <td>
-                                {{ etablissement.codePostalUai }} {{ etablissement.localiteAcheminementUai }}
-                            </td>
-                            <td>
-                                <span class="badge badge-{{ etablissement.secteur == 'public' ? 'success' : 'warning' }}">
-                                    {{ etablissement.secteur.value|capitalize }}
-                                </span>
-                            </td>
-                            <td>
-                                <a href="{{ path('etablissement_show', {'numeroUai': etablissement.numeroUai}) }}" 
-                                   class="btn btn-sm btn-info">
-                                    ➕ Détails
+                                <a href="{{ path('app_etablissement_by_commune', {'codeCommune': etablissement.codeCommune}) }}">
+                                    {{ etablissement.commune }}
                                 </a>
                             </td>
+                            <td>
+                                <a href="{{ path('app_etablissement_by_departement', {'codeDepartement': etablissement.codeDepartement}) }}">
+                                    {{ etablissement.departement }}
+                                </a>
+                            </td>
+                            <td>{{ etablissement.secteur }}</td>
+                            <td>
+                                <a href="{{ path('app_etablissement_show', {'id': etablissement.id}) }}" class="btn btn-sm btn-primary">Détails</a>
+                            </td>
                         </tr>
-                        {% endfor %}
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
+        {% else %}
+            <div class="alert alert-info">Aucun établissement trouvé.</div>
+        {% endif %}
+        
+        <div class="mt-3">
+            <a href="{{ path('app_etablissement_index') }}" class="btn btn-secondary">Retour à la liste complète</a>
         </div>
     </div>
-</div>
 {% endblock %}

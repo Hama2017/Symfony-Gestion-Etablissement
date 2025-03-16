@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250316143133 extends AbstractMigration
+final class Version20250316172753 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -24,7 +24,7 @@ final class Version20250316143133 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE etablissement_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE commentaire (id INT NOT NULL, etablissement_id INT NOT NULL, auteur VARCHAR(255) NOT NULL, date_creation TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, note INT NOT NULL, texte TEXT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_67F068BCFF631228 ON commentaire (etablissement_id)');
-        $this->addSql('CREATE TABLE etablissement (id INT NOT NULL, numero_uai VARCHAR(10) NOT NULL, appellation_officielle VARCHAR(255) DEFAULT NULL, denomination_principale VARCHAR(255) DEFAULT NULL, patronyme VARCHAR(255) DEFAULT NULL, secteur VARCHAR(10) NOT NULL, adresse VARCHAR(255) DEFAULT NULL, code_postal VARCHAR(10) DEFAULT NULL, commune VARCHAR(255) DEFAULT NULL, latitude DOUBLE PRECISION DEFAULT NULL, longitude DOUBLE PRECISION DEFAULT NULL, nature_uai_libelle VARCHAR(255) DEFAULT NULL, nature_uai_code INT DEFAULT NULL, etat_etablissement VARCHAR(20) NOT NULL, code_departement VARCHAR(10) DEFAULT NULL, departement VARCHAR(255) DEFAULT NULL, code_region VARCHAR(10) DEFAULT NULL, region VARCHAR(255) DEFAULT NULL, code_academie VARCHAR(10) DEFAULT NULL, academie VARCHAR(255) DEFAULT NULL, date_ouverture DATE DEFAULT NULL, sigle VARCHAR(20) DEFAULT NULL, code_commune VARCHAR(10) DEFAULT NULL, code_ministere VARCHAR(10) DEFAULT NULL, ministere VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE etablissement (id INT NOT NULL, numero_uai VARCHAR(20) NOT NULL, appellation_officielle VARCHAR(500) DEFAULT NULL, denomination_principale VARCHAR(500) DEFAULT NULL, patronyme VARCHAR(500) DEFAULT NULL, secteur VARCHAR(20) NOT NULL, adresse VARCHAR(500) DEFAULT NULL, code_postal VARCHAR(20) DEFAULT NULL, commune VARCHAR(500) DEFAULT NULL, latitude DOUBLE PRECISION DEFAULT NULL, longitude DOUBLE PRECISION DEFAULT NULL, nature_uai_libelle VARCHAR(500) DEFAULT NULL, nature_uai_code INT DEFAULT NULL, etat_etablissement VARCHAR(50) NOT NULL, code_departement VARCHAR(20) DEFAULT NULL, departement VARCHAR(500) DEFAULT NULL, code_region VARCHAR(20) DEFAULT NULL, region VARCHAR(500) DEFAULT NULL, code_academie VARCHAR(20) DEFAULT NULL, academie VARCHAR(500) DEFAULT NULL, date_ouverture DATE DEFAULT NULL, sigle VARCHAR(50) DEFAULT NULL, code_commune VARCHAR(20) DEFAULT NULL, code_ministere VARCHAR(20) DEFAULT NULL, ministere VARCHAR(500) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_20FD592CD0A47604 ON etablissement (numero_uai)');
         $this->addSql('CREATE TABLE messenger_messages (id BIGSERIAL NOT NULL, body TEXT NOT NULL, headers TEXT NOT NULL, queue_name VARCHAR(190) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, available_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, delivered_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_75EA56E0FB7336F0 ON messenger_messages (queue_name)');
