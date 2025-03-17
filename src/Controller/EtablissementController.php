@@ -185,11 +185,14 @@ class EtablissementController extends AbstractController
     #[Route('/secteur/{secteur}', name: 'app_etablissement_by_secteur', methods: ['GET'])]
     public function listBySecteur(Request $request, string $secteur): Response
     {
-        $query = $this->etablissementRepository->createQueryBuilder('e')
-            ->where('e.secteur = :secteur')
-            ->setParameter('secteur', $secteur)
-            ->orderBy('e.appellationOfficielle', 'ASC')
-            ->getQuery();
+      $query = $this->etablissementRepository->createQueryBuilder('e')
+	    ->where('LOWER(TRIM(e.secteur)) LIKE LOWER(TRIM(:secteur))')
+	    ->setParameter('secteur', 'privé')
+	    ->orderBy('e.appellationOfficielle', 'ASC')
+	    ->getQuery();
+
+
+
         
         $etablissements = $this->paginator->paginate(
             $query,
@@ -209,11 +212,11 @@ class EtablissementController extends AbstractController
     #[Route('/type/{type}', name: 'app_etablissement_by_type', methods: ['GET'])]
     public function listByType(Request $request, string $type): Response
     {
-        $query = $this->etablissementRepository->createQueryBuilder('e')
-            ->where('e.denominationPrincipale = :type')
-            ->setParameter('type', $type)
-            ->orderBy('e.appellationOfficielle', 'ASC')
-            ->getQuery();
+       $query = $this->etablissementRepository->createQueryBuilder('e')
+	    ->where('LOWER(TRIM(e.denominationPrincipale)) LIKE LOWER(TRIM(:type))')
+	    ->setParameter('type', '%' . strtolower(trim($type)) . '%')
+	    ->orderBy('e.appellationOfficielle', 'ASC')
+	    ->getQuery();
         
         $etablissements = $this->paginator->paginate(
             $query,
