@@ -9,7 +9,7 @@
         {% if etablissements|length > 0 %}
             <div class="row mb-3">
                 <div class="col">
-                    <p>{{ etablissements|length }} établissement(s) trouvé(s)</p>
+                    <p>{{ etablissements.getTotalItemCount }} établissement(s) trouvé(s)</p>
                 </div>
             </div>
             
@@ -50,6 +50,10 @@
                     {% endfor %}
                     </tbody>
                 </table>
+            </div>
+            
+            <div class="navigation">
+                {{ knp_pagination_render(etablissements) }}
             </div>
         {% else %}
             <div class="alert alert-info">Aucun établissement trouvé.</div>
