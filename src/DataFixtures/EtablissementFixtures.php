@@ -25,7 +25,7 @@ class EtablissementFixtures extends Fixture
         while (($data = fgetcsv($handle, 0, ';')) !== false) {
             yield $data;
         }
-        
+
         fclose($handle);
     }
 
@@ -97,13 +97,14 @@ class EtablissementFixtures extends Fixture
                 echo "Importés: $iteration établissements\n";
             }
         }
-        
-        if (!empty($tempObjets)) {
-            $manager->flush();
-            
-            $manager->clear();
 
+
+        if ($iteration % self::BATCH_SIZE !== 0) {
+        $manager->flush();
         }
+
+        
+    
         
         echo "Importation terminée: $iteration établissements importés\n";
     }
