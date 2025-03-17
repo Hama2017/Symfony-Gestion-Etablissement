@@ -15,10 +15,12 @@
                     <div class="col-md-6">
                         <p><strong>Numéro UAI :</strong> {{ etablissement.numeroUai }}</p>
                         <p><strong>Type :</strong> {{ etablissement.denominationPrincipale }}</p>
-                        <p><strong>Nature :</strong> {{ etablissement.nature }}</p>
                         <p><strong>Secteur :</strong> {{ etablissement.secteur }}</p>
-                        <p><strong>Ouvert :</strong> {{ etablissement.estOuvert ? 'Oui' : 'Non' }}</p>
-                        <p><strong>Date d'ouverture :</strong> {{ etablissement.dateOuverture|date('d/m/Y') }}</p>
+
+                        {% if etablissement.dateOuverture is defined %}
+                            <p><strong>Date d'ouverture :</strong> {{ etablissement.dateOuverture|date('d/m/Y') }}</p>
+                        {% endif %}
+
                         {% if etablissement.patronyme %}
                             <p><strong>Patronyme :</strong> {{ etablissement.patronyme }}</p>
                         {% endif %}
@@ -27,9 +29,6 @@
                         {% endif %}
                         {% if etablissement.ministere %}
                             <p><strong>Ministère :</strong> {{ etablissement.ministere }}</p>
-                        {% endif %}
-                        {% if etablissement.typeContrat %}
-                            <p><strong>Type de contrat :</strong> {{ etablissement.typeContrat }}</p>
                         {% endif %}
                     </div>
                     <div class="col-md-6">
@@ -68,7 +67,6 @@
                 <p><strong>Latitude :</strong> {{ etablissement.latitude }}</p>
                 <p><strong>Longitude :</strong> {{ etablissement.longitude }}</p>
                 <div id="map" style="height: 400px;" class="mb-3">
-                    <!-- Ici vous pourriez intégrer une carte OpenStreetMap ou Google Maps -->
                     <div class="alert alert-info">
                         Une carte interactive sera intégrée ultérieurement pour visualiser l'emplacement de l'établissement.
                     </div>
@@ -76,7 +74,6 @@
             </div>
         </div>
         
-        <!-- Section pour les commentaires (à développer plus tard) -->
         <div class="card mb-4">
             <div class="card-header">
                 <h3>Commentaires</h3>
@@ -93,3 +90,4 @@
         </div>
     </div>
 {% endblock %}
+
