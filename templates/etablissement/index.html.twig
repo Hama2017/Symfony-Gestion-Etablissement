@@ -3,48 +3,97 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1>{{ title }}</h1>
-
-        {% if etablissements|length > 0 %}
-            <div class="row mb-3">
-                <div class="col">
+    <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- En-tête avec titre et ombre -->
+        <div class="bg-white shadow-md rounded-lg px-8 py-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">{{ title }}</h1>
+            
+            {% if etablissements|length > 0 %}
+                <div class="mt-2 text-gray-600">
                     <p>{{ etablissements.getTotalItemCount }} établissement(s) trouvé(s)</p>
                 </div>
-            </div>
-            
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
+            {% endif %}
+        </div>
+        
+        {% if etablissements|length > 0 %}
+            <!-- Tableau des établissements -->
+            <div class="overflow-x-auto bg-white rounded-lg shadow">
+                <table class="w-full table-auto border-collapse">
+                    <thead class="bg-gray-50">
                         <tr>
-                            <th>UAI</th>
-                            <th>Nom</th>
-                            <th>Type</th>
-                            <th>Commune</th>
-                            <th>Département</th>
-                            <th>Secteur</th>
-                            <th>Actions</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">UAI</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">Nom</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">Type</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">Commune</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">Département</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">Région</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">Académie</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">Secteur</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b w-32">État</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">Code Postal</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">Latitude</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">Longitude</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white divide-y divide-gray-200">
                     {% for etablissement in etablissements %}
-                        <tr>
-                            <td>{{ etablissement.numeroUai }}</td>
-                            <td>{{ etablissement.appellationOfficielle }}</td>
-                            <td>{{ etablissement.denominationPrincipale }}</td>
-                            <td>
-                                <a href="{{ path('app_etablissement_by_commune', {'codeCommune': etablissement.codeCommune}) }}">
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ etablissement.numeroUai }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">{{ etablissement.appellationOfficielle }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">{{ etablissement.denominationPrincipale }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">
+                                <a href="{{ path('app_etablissement_by_commune', {'codeCommune': etablissement.codeCommune}) }}" 
+                                   class="text-indigo-600 hover:text-indigo-900 hover:underline">
                                     {{ etablissement.commune }}
                                 </a>
                             </td>
-                            <td>
-                                <a href="{{ path('app_etablissement_by_departement', {'codeDepartement': etablissement.codeDepartement}) }}">
+                            <td class="px-4 py-3 text-sm text-gray-700">
+                                <a href="{{ path('app_etablissement_by_departement', {'codeDepartement': etablissement.codeDepartement}) }}" 
+                                   class="text-indigo-600 hover:text-indigo-900 hover:underline">
                                     {{ etablissement.departement }}
                                 </a>
                             </td>
-                            <td>{{ etablissement.secteur }}</td>
-                            <td>
-                                <a href="{{ path('app_etablissement_show', {'id': etablissement.id}) }}" class="btn btn-sm btn-primary">Détails</a>
+                            <td class="px-4 py-3 text-sm text-gray-700">
+                                <a href="{{ path('app_etablissement_by_region', {'codeRegion': etablissement.codeRegion}) }}" 
+                                   class="text-indigo-600 hover:text-indigo-900 hover:underline">
+                                    {{ etablissement.region }}
+                                </a>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-700">
+                                <a href="{{ path('app_etablissement_by_academie', {'codeAcademie': etablissement.codeAcademie}) }}" 
+                                   class="text-indigo-600 hover:text-indigo-900 hover:underline">
+                                    {{ etablissement.academie }}
+                                </a>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-700">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    {% if etablissement.secteur == 'Public' %}
+                                        bg-green-100 text-green-800
+                                    {% else %}
+                                        bg-yellow-100 text-yellow-800
+                                    {% endif %}">
+                                    {{ etablissement.secteur }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-700 w-32">
+                                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    {% if etablissement.etatEtablissement == 'OUVERT' %}
+                                        bg-green-100 text-green-800
+                                    {% else %}
+                                        bg-red-100 text-red-800
+                                    {% endif %}">
+                                    {{ etablissement.etatEtablissement }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-700">{{ etablissement.codePostal }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">{{ etablissement.latitude }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">{{ etablissement.longitude }}</td>
+                            <td class="px-4 py-3 text-sm font-medium">
+                                <a href="{{ path('app_etablissement_show', {'id': etablissement.id}) }}" 
+                                   class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    Détails
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -52,15 +101,25 @@
                 </table>
             </div>
             
-            <div class="navigation">
+            <!-- Pagination -->
+            <div class="mt-5 flex justify-center">
                 {{ knp_pagination_render(etablissements) }}
             </div>
         {% else %}
-            <div class="alert alert-info">Aucun établissement trouvé.</div>
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-blue-700">Aucun établissement trouvé.</p>
+                    </div>
+                </div>
+            </div>
         {% endif %}
         
-        <div class="mt-3">
-            <a href="{{ path('app_etablissement_index') }}" class="btn btn-secondary">Retour à la liste complète</a>
-        </div>
+       
     </div>
 {% endblock %}

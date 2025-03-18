@@ -3,54 +3,74 @@
 {% block title %}{{ etablissement.appellationOfficielle }}{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1>{{ etablissement.appellationOfficielle }}</h1>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- En-tête avec titre et ombre -->
+        <div class="bg-white shadow-md rounded-lg px-8 py-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">{{ etablissement.appellationOfficielle }}</h1>
+            <p class="mt-2 text-gray-600">
+                <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full 
+                      {% if etablissement.secteur == 'Public' %}
+                          bg-green-100 text-green-800
+                      {% else %}
+                          bg-yellow-100 text-yellow-800
+                      {% endif %}">
+                    {{ etablissement.secteur }}
+                </span>
+            </p>
+        </div>
         
-        <div class="card mb-4">
-            <div class="card-header">
-                <h3>Informations générales</h3>
+        <!-- Informations générales -->
+        <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Informations générales</h3>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>Numéro UAI :</strong> {{ etablissement.numeroUai }}</p>
-                        <p><strong>Type :</strong> {{ etablissement.denominationPrincipale }}</p>
-                        <p><strong>Secteur :</strong> {{ etablissement.secteur }}</p>
+            <div class="px-6 py-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Colonne de gauche -->
+                    <div>
+                        <p class="mb-3"><span class="font-semibold text-gray-700">Numéro UAI :</span> {{ etablissement.numeroUai }}</p>
+                        <p class="mb-3"><span class="font-semibold text-gray-700">Type :</span> {{ etablissement.denominationPrincipale }}</p>
+                        <p class="mb-3"><span class="font-semibold text-gray-700">Secteur :</span> {{ etablissement.secteur }}</p>
 
-                        {% if etablissement.dateOuverture is defined %}
-                            <p><strong>Date d'ouverture :</strong> {{ etablissement.dateOuverture|date('d/m/Y') }}</p>
+                        {% if etablissement.dateOuverture is defined and etablissement.dateOuverture %}
+                            <p class="mb-3"><span class="font-semibold text-gray-700">Date d'ouverture :</span> {{ etablissement.dateOuverture|date('d/m/Y') }}</p>
                         {% endif %}
 
                         {% if etablissement.patronyme %}
-                            <p><strong>Patronyme :</strong> {{ etablissement.patronyme }}</p>
+                            <p class="mb-3"><span class="font-semibold text-gray-700">Patronyme :</span> {{ etablissement.patronyme }}</p>
                         {% endif %}
                         {% if etablissement.sigle %}
-                            <p><strong>Sigle :</strong> {{ etablissement.sigle }}</p>
+                            <p class="mb-3"><span class="font-semibold text-gray-700">Sigle :</span> {{ etablissement.sigle }}</p>
                         {% endif %}
                         {% if etablissement.ministere %}
-                            <p><strong>Ministère :</strong> {{ etablissement.ministere }}</p>
+                            <p class="mb-3"><span class="font-semibold text-gray-700">Ministère :</span> {{ etablissement.ministere }}</p>
                         {% endif %}
                     </div>
-                    <div class="col-md-6">
-                        <p><strong>Adresse :</strong> {{ etablissement.adresse }}</p>
-                        <p><strong>Code postal :</strong> {{ etablissement.codePostal }}</p>
-                        <p><strong>Commune :</strong> 
-                            <a href="{{ path('app_etablissement_by_commune', {'codeCommune': etablissement.codeCommune}) }}">
+                    <!-- Colonne de droite -->
+                    <div>
+                        <p class="mb-3"><span class="font-semibold text-gray-700">Adresse :</span> {{ etablissement.adresse }}</p>
+                        <p class="mb-3"><span class="font-semibold text-gray-700">Code postal :</span> {{ etablissement.codePostal }}</p>
+                        <p class="mb-3"><span class="font-semibold text-gray-700">Commune :</span> 
+                            <a href="{{ path('app_etablissement_by_commune', {'codeCommune': etablissement.codeCommune}) }}"
+                               class="text-indigo-600 hover:text-indigo-900 hover:underline">
                                 {{ etablissement.commune }}
                             </a>
                         </p>
-                        <p><strong>Département :</strong> 
-                            <a href="{{ path('app_etablissement_by_departement', {'codeDepartement': etablissement.codeDepartement}) }}">
+                        <p class="mb-3"><span class="font-semibold text-gray-700">Département :</span> 
+                            <a href="{{ path('app_etablissement_by_departement', {'codeDepartement': etablissement.codeDepartement}) }}"
+                               class="text-indigo-600 hover:text-indigo-900 hover:underline">
                                 {{ etablissement.departement }}
                             </a>
                         </p>
-                        <p><strong>Région :</strong> 
-                            <a href="{{ path('app_etablissement_by_region', {'codeRegion': etablissement.codeRegion}) }}">
+                        <p class="mb-3"><span class="font-semibold text-gray-700">Région :</span> 
+                            <a href="{{ path('app_etablissement_by_region', {'codeRegion': etablissement.codeRegion}) }}"
+                               class="text-indigo-600 hover:text-indigo-900 hover:underline">
                                 {{ etablissement.region }}
                             </a>
                         </p>
-                        <p><strong>Académie :</strong> 
-                            <a href="{{ path('app_etablissement_by_academie', {'codeAcademie': etablissement.codeAcademie}) }}">
+                        <p class="mb-3"><span class="font-semibold text-gray-700">Académie :</span> 
+                            <a href="{{ path('app_etablissement_by_academie', {'codeAcademie': etablissement.codeAcademie}) }}"
+                               class="text-indigo-600 hover:text-indigo-900 hover:underline">
                                 {{ etablissement.academie }}
                             </a>
                         </p>
@@ -59,35 +79,65 @@
             </div>
         </div>
         
-        <div class="card mb-4">
-            <div class="card-header">
-                <h3>Géolocalisation</h3>
+        <!-- Géolocalisation -->
+        <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Géolocalisation</h3>
             </div>
-            <div class="card-body">
-                <p><strong>Latitude :</strong> {{ etablissement.latitude }}</p>
-                <p><strong>Longitude :</strong> {{ etablissement.longitude }}</p>
-                <div id="map" style="height: 400px;" class="mb-3">
-                    <div class="alert alert-info">
-                        Une carte interactive sera intégrée ultérieurement pour visualiser l'emplacement de l'établissement.
+            <div class="px-6 py-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                    <p><span class="font-semibold text-gray-700">Latitude :</span> {{ etablissement.latitude }}</p>
+                    <p><span class="font-semibold text-gray-700">Longitude :</span> {{ etablissement.longitude }}</p>
+                </div>
+                <div id="map" class="h-96 mb-4 rounded-lg border border-gray-300 bg-gray-50">
+                    <div class="flex h-full items-center justify-center">
+                        <div class="p-4 text-center bg-blue-50 border-l-4 border-blue-400 max-w-lg">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3 text-left">
+                                    <p class="text-sm text-blue-700">Une carte interactive sera intégrée ultérieurement pour visualiser l'emplacement de l'établissement.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="card mb-4">
-            <div class="card-header">
-                <h3>Commentaires</h3>
+        <!-- Commentaires -->
+        <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Commentaires</h3>
             </div>
-            <div class="card-body">
-                <div class="alert alert-info">
-                    La section commentaires sera développée ultérieurement.
+            <div class="px-6 py-5">
+                <div class="p-4 text-center bg-blue-50 border-l-4 border-blue-400">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3 text-left">
+                            <p class="text-sm text-blue-700">La section commentaires sera développée ultérieurement.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="mt-3">
-            <a href="{{ path('app_etablissement_index') }}" class="btn btn-secondary">Retour à la liste</a>
+        <!-- Bouton de retour -->
+        <div class="mt-8">
+            <a href="{{ path('app_etablissement_index') }}" 
+               class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                Retour à la liste
+            </a>
         </div>
     </div>
 {% endblock %}
-
