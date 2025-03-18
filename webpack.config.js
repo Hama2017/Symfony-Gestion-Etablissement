@@ -68,6 +68,9 @@ Encore
 
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
+
+    // Activer le loader PostCSS pour Tailwind
+    .enablePostCssLoader()
 ;
 
 module.exports = Encore.getWebpackConfig();
