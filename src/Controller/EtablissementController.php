@@ -7,14 +7,14 @@ use App\Repository\EtablissementRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/etablissements')]
 class EtablissementController extends AbstractController
 {
-    private $etablissementRepository;
-    private $paginator;
+    private EtablissementRepository $etablissementRepository;
+    private PaginatorInterface $paginator;
 
     public function __construct(EtablissementRepository $etablissementRepository, PaginatorInterface $paginator)
     {
@@ -28,20 +28,8 @@ class EtablissementController extends AbstractController
     #[Route('/', name: 'app_etablissement_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        $query = $this->etablissementRepository->createQueryBuilder('e')
-            ->orderBy('e.id', 'ASC')
-            ->getQuery();
-
-        $etablissements = $this->paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            40 // Nombre d'éléments par page
-        );
-
-        return $this->render('etablissement/index.html.twig', [
-            'etablissements' => $etablissements,
-            'title' => 'Tous les établissements'
-        ]);
+        $query = $this->etablissementRepository->findAllQuery()->getQuery();
+        return $this->paginateAndRender($request, $query, 'Tous les établissements');
     }
 
     /**
@@ -56,165 +44,70 @@ class EtablissementController extends AbstractController
     }
 
     /**
-     * Liste des établissements par département (paginée)
+     * Liste des établissements par département
      */
     #[Route('/departement/{codeDepartement}', name: 'app_etablissement_by_departement', methods: ['GET'])]
     public function listByDepartement(Request $request, string $codeDepartement): Response
     {
-        $query = $this->etablissementRepository->createQueryBuilder('e')
-            ->where('e.codeDepartement = :code')
-            ->setParameter('code', $codeDepartement)
-            ->orderBy('e.appellationOfficielle', 'ASC')
-            ->getQuery();
-        
-        $etablissements = $this->paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            40
-        );
-        
-        // Récupérer le nom du département
-        $departementName = $codeDepartement;
-        $firstEtablissement = $this->etablissementRepository->findOneBy(['codeDepartement' => $codeDepartement]);
-        if ($firstEtablissement) {
-            $departementName = $firstEtablissement->getDepartement();
-        }
-
-        return $this->render('etablissement/index.html.twig', [
-            'etablissements' => $etablissements,
-            'title' => 'Établissements du département ' . $departementName
-        ]);
+        $query = $this->etablissementRepository->findByDepartementQuery($codeDepartement)->getQuery();
+        return $this->paginateAndRender($request, $query, "Établissements du département $codeDepartement");
     }
 
     /**
-     * Liste des établissements par région (paginée)
+     * Liste des établissements par région
      */
     #[Route('/region/{codeRegion}', name: 'app_etablissement_by_region', methods: ['GET'])]
     public function listByRegion(Request $request, string $codeRegion): Response
     {
-        $query = $this->etablissementRepository->createQueryBuilder('e')
-            ->where('e.codeRegion = :code')
-            ->setParameter('code', $codeRegion)
-            ->orderBy('e.appellationOfficielle', 'ASC')
-            ->getQuery();
-        
-        $etablissements = $this->paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            40
-        );
-        
-        // Récupérer le nom de la région
-        $regionName = $codeRegion;
-        $firstEtablissement = $this->etablissementRepository->findOneBy(['codeRegion' => $codeRegion]);
-        if ($firstEtablissement) {
-            $regionName = $firstEtablissement->getRegion();
-        }
-
-        return $this->render('etablissement/index.html.twig', [
-            'etablissements' => $etablissements,
-            'title' => 'Établissements de la région ' . $regionName
-        ]);
+        $query = $this->etablissementRepository->findByRegionQuery($codeRegion)->getQuery();
+        return $this->paginateAndRender($request, $query, "Établissements de la région $codeRegion");
     }
 
     /**
-     * Liste des établissements par commune (paginée)
+     * Liste des établissements par commune
      */
     #[Route('/commune/{codeCommune}', name: 'app_etablissement_by_commune', methods: ['GET'])]
     public function listByCommune(Request $request, string $codeCommune): Response
     {
-        $query = $this->etablissementRepository->createQueryBuilder('e')
-            ->where('e.codeCommune = :code')
-            ->setParameter('code', $codeCommune)
-            ->orderBy('e.appellationOfficielle', 'ASC')
-            ->getQuery();
-        
-        $etablissements = $this->paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            40
-        );
-        
-        // Récupérer le nom de la commune
-        $communeName = $codeCommune;
-        $firstEtablissement = $this->etablissementRepository->findOneBy(['codeCommune' => $codeCommune]);
-        if ($firstEtablissement) {
-            $communeName = $firstEtablissement->getCommune();
-        }
-
-        return $this->render('etablissement/index.html.twig', [
-            'etablissements' => $etablissements,
-            'title' => 'Établissements de la commune de ' . $communeName
-        ]);
+        $query = $this->etablissementRepository->findByCommuneQuery($codeCommune)->getQuery();
+        return $this->paginateAndRender($request, $query, "Établissements de la commune $codeCommune");
     }
 
     /**
-     * Liste des établissements par académie (paginée)
+     * Liste des établissements par académie
      */
     #[Route('/academie/{codeAcademie}', name: 'app_etablissement_by_academie', methods: ['GET'])]
     public function listByAcademie(Request $request, string $codeAcademie): Response
     {
-        $query = $this->etablissementRepository->createQueryBuilder('e')
-            ->where('e.codeAcademie = :code')
-            ->setParameter('code', $codeAcademie)
-            ->orderBy('e.appellationOfficielle', 'ASC')
-            ->getQuery();
-        
-        $etablissements = $this->paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            40
-        );
-        
-        // Récupérer le nom de l'académie
-        $academieName = $codeAcademie;
-        $firstEtablissement = $this->etablissementRepository->findOneBy(['codeAcademie' => $codeAcademie]);
-        if ($firstEtablissement) {
-            $academieName = $firstEtablissement->getAcademie();
-        }
-
-        return $this->render('etablissement/index.html.twig', [
-            'etablissements' => $etablissements,
-            'title' => 'Établissements de l\'académie de ' . $academieName
-        ]);
+        $query = $this->etablissementRepository->findByAcademieQuery($codeAcademie)->getQuery();
+        return $this->paginateAndRender($request, $query, "Établissements de l'académie $codeAcademie");
     }
 
     /**
-     * Liste des établissements par secteur (paginée)
+     * Liste des établissements par secteur (Public/Privé)
      */
     #[Route('/secteur/{secteur}', name: 'app_etablissement_by_secteur', methods: ['GET'])]
     public function listBySecteur(Request $request, string $secteur): Response
     {
-        $query = $this->etablissementRepository->createQueryBuilder('e')
-            ->where('e.secteur = :secteur')
-            ->setParameter('secteur', $secteur)
-            ->orderBy('e.appellationOfficielle', 'ASC')
-            ->getQuery();
-        
-        $etablissements = $this->paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            40
-        );
-
-        return $this->render('etablissement/index.html.twig', [
-            'etablissements' => $etablissements,
-            'title' => 'Établissements du secteur ' . $secteur
-        ]);
+        $query = $this->etablissementRepository->findBySecteurQuery($secteur)->getQuery();
+        return $this->paginateAndRender($request, $query, "Établissements du secteur $secteur");
     }
 
     /**
-     * Liste des établissements par type (paginée)
+     * Liste des établissements par type
      */
     #[Route('/type/{type}', name: 'app_etablissement_by_type', methods: ['GET'])]
     public function listByType(Request $request, string $type): Response
     {
-        $query = $this->etablissementRepository->createQueryBuilder('e')
-            ->where('e.denominationPrincipale = :type')
-            ->setParameter('type', $type)
-            ->orderBy('e.appellationOfficielle', 'ASC')
-            ->getQuery();
-        
+        $query = $this->etablissementRepository->findByTypeQuery($type)->getQuery();
+        return $this->paginateAndRender($request, $query, "Établissements de type $type");
+    }
+
+    /**
+     * Fonction générique pour la pagination et l'affichage des établissements
+     */
+    private function paginateAndRender(Request $request, $query, string $title): Response
+    {
         $etablissements = $this->paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
@@ -223,7 +116,8 @@ class EtablissementController extends AbstractController
 
         return $this->render('etablissement/index.html.twig', [
             'etablissements' => $etablissements,
-            'title' => 'Établissements de type ' . $type
+            'title' => $title
         ]);
     }
 }
+
