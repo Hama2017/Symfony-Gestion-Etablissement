@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Entity\Commentaire;
+
 use App\Repository\EtablissementRepository;
 use App\Enum\Secteur;
 use Doctrine\ORM\Mapping as ORM;
@@ -90,6 +94,44 @@ class Etablissement
 
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $ministere = null;
+
+
+    #[ORM\OneToMany(mappedBy: 'etablissement', targetEntity: Commentaire::class, orphanRemoval: true)]
+
+
+    private Collection $commentaires;
+
+public function __construct()
+{
+    $this->commentaires = new ArrayCollection();
+}
+
+public function getCommentaires(): Collection
+{
+    return $this->commentaires;
+}
+
+public function addCommentaire(Commentaire $commentaire): self
+{
+    if (!$this->commentaires->contains($commentaire)) {
+        $this->commentaires[] = $commentaire;
+        $commentaire->setEtablissement($this);
+    }
+
+    return $this;
+}
+
+public function removeCommentaire(Commentaire $commentaire): self
+{
+    if ($this->commentaires->removeElement($commentaire)) {
+        // set the owning side to null (unless already changed)
+        if ($commentaire->getEtablissement() === $this) {
+            $commentaire->setEtablissement(null);
+        }
+    }
+
+    return $this;
+}
 
     public function getId(): ?int
     {
@@ -383,4 +425,7 @@ public function setCodePostal(?string $codePostal): static
 
         return $this;
     }
+
+
+
 }
