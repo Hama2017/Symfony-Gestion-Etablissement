@@ -6,5 +6,6 @@ knp_paginator:
       sort_direction_name: direction # nom du paramètre de direction dans l'URL
       distinct: true                 # résultats distincts (utile avec le tri)
   template:
-      pagination: '@KnpPaginator/Pagination/bootstrap_v5_pagination.html.twig'     # template pour la pagination (Bootstrap 5)
+    # pagination: '@KnpPaginator/Pagination/bootstrap_v5_pagination.html.twig'     # template pour la pagination (Bootstrap 5)
+      pagination: '@KnpPaginator/Pagination/tailwind_pagination.html.twig'     # template custom pour la pagination tailwind 
       sortable: '@KnpPaginator/Pagination/sortable_link.html.twig' # template pour les liens triables
