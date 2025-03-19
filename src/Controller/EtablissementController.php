@@ -23,8 +23,9 @@ class EtablissementController extends AbstractController
     }
 
     /**
-     * Liste de tous les établissements (paginée)
+     * Liste de tous les établissements(paginée)
      */
+     
     #[Route('/', name: 'app_etablissement_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
@@ -33,8 +34,9 @@ class EtablissementController extends AbstractController
     }
 
     /**
-     * Affiche les détails d'un établissement
+     * Afficher les détails d'un établissement
      */
+     
     #[Route('/{id}', name: 'app_etablissement_show', methods: ['GET'])]
     public function show(Etablissement $etablissement): Response
     {
